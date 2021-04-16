@@ -7,8 +7,10 @@
 #include "process-context.h"
 #include "priv.h"
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0)  //{
-#define CURRENT_TIME_SEC ((struct timespec) { get_seconds(), 0 })
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4, 0, 0) && LINUX_VERSION_Code < KERNEL_VERSION(5, 6, 0) //{
+    #define CURRENT_TIME_SEC ((struct timespec) { get_seconds(), 0 })
+#elif LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0)
+    #define CURRENT_TIME_SEC ((struct timespec64) { ktime_get_real_seconds(), 0 })
 #endif  //}
 
 static struct ec_hook_tracking_node
