@@ -13,7 +13,11 @@
 #include "dbg.h"
 #include <linux/llist.h>
 
-extern struct timespec ec_get_current_timespec(void);
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 6, 0)
+    extern struct timespec ec_get_current_timespec(void);
+#else
+    extern struct timespec64 ec_get_current_timespec(void);
+#endif
 
 #define __HOOK_TRACKING_INITIALIZER() {           \
     .hook_name = __func__,                        \
