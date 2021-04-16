@@ -138,21 +138,21 @@ int ec_proc_state_open(struct inode *inode, struct file *file)
     return single_open(file, ec_proc_state, PDE_DATA(inode));
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0)
-static const struct proc_ops ec_fops = {
-        .proc_open       = ec_proc_state_open,
-        .proc_read       = seq_read,
-        .proc_write      = NULL,
-        .proc_release    = single_release,
-};
-#else
-static const struct file_operations ec_fops = {
+#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 6, 0)
+    static const struct file_operations ec_fops = {
         .owner      = THIS_MODULE,
         .open       = ec_proc_state_open,
         .read       = seq_read,
         .write      = NULL,
         .release    = single_release,
-};
+    };
+#else
+    static const struct proc_ops ec_fops = {
+        .proc_open       = ec_proc_state_open,
+        .proc_read       = seq_read,
+        .proc_write      = NULL,
+        .proc_release    = single_release,
+    };
 #endif
 
 const char *PROC_STATE_FILENAME = CB_APP_MODULE_NAME "_state";
