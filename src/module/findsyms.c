@@ -194,7 +194,10 @@ bool __ec_lookup_peer_modules(ProcessContext *context, struct list_head *output_
 
     INIT_LIST_HEAD(output_modules);
 
-    set_fs(get_ds());
+    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+        set_fs(get_ds());
+    #endif
+
     pFile = filp_open("/proc/modules", O_RDONLY, 0);
     if (IS_ERR(pFile))
     {
@@ -347,9 +350,12 @@ int __ec_get_kptr_restrict(void)
     char         buffer[KPTR_RESTRICT_LEN + 1];
     int          current_kptr_restrict = -1;
     loff_t       offset                = 0;
-    mm_segment_t oldfs                 = get_fs();
 
-    set_fs(get_ds());
+    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+        mm_segment_t oldfs = get_fs();
+        set_fs(get_ds());
+    #endif
+
     pFile = filp_open(KPTR_RESTRICT_PATH, O_RDONLY, 0);
     TRY(!IS_ERR(pFile));
 
@@ -372,7 +378,10 @@ CATCH_DEFAULT:
         filp_close(pFile, NULL);
         pFile = NULL;
     }
-    set_fs(oldfs);
+    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+        set_fs(oldfs);
+    #endif
+
     return current_kptr_restrict;
 }
 
@@ -387,9 +396,12 @@ void __ec_set_kptr_restrict(int new_kptr_restrict)
     char         buffer[KPTR_RESTRICT_LEN + 1];
     ssize_t      ret;
     loff_t       offset = 0;
-    mm_segment_t oldfs  = get_fs();
 
-    set_fs(get_ds());
+    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+        mm_segment_t oldfs  = get_fs();
+        set_fs(get_ds());
+    #endif
+
     pFile = filp_open(KPTR_RESTRICT_PATH, O_WRONLY, 0);
     TRY(!IS_ERR(pFile));
 
@@ -411,7 +423,9 @@ CATCH_DEFAULT:
         filp_close(pFile, NULL);
         pFile = NULL;
     }
-    set_fs(oldfs);
+    #if (LINUX_VERSION_CODE < KERNEL_VERSION(5, 10, 0))
+        set_fs(oldfs);
+    #endif
 }
 
 int ec_findsyms_init(ProcessContext *context, struct symbols_s *p_symbols)
