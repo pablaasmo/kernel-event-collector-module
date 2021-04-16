@@ -34,6 +34,16 @@
 #include "task-helper.h"
 #include "hook-tracking.h"
 
+// Quick fix to compile with kernel 5.6
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 6, 0)
+    #define timespec timespec64
+    #define timespec_to_ns timespec64_to_ns
+    #define getnstimeofday ktime_get_real_ts64
+    #define timeval __kernel_old_timeval
+    #define time_t ktime_t
+#endif
+
+
 extern const char DRIVER_NAME[];
 
 #define INITTASK 1    // used by protection software to prevent catastrophic issues
