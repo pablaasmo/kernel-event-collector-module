@@ -47,8 +47,7 @@ if (${LOCAL_BUILD})
                 "To build for the current distribution, use:\n"
                 "    -DKERNEL_NAME=$(uname -r)\n")
     endif()
-
-    set(KERNEL_LIST INSERT 0 "${KERNEL_NAME}")
+    list(INSERT KERNEL_LIST 0 "${KERNEL_NAME}")
 else()
     message("Building using variables provided by CB build utility")
     find_package(CbUtil REQUIRED)
@@ -121,12 +120,14 @@ set(CBSENSOR_FLAGS "${CBSENSOR_FLAGS} -I${PROJECT_SOURCE_DIR}")
 set(CBSENSOR_FLAGS "${CBSENSOR_FLAGS} -I${PROJECT_SOURCE_DIR}/tests")
 set(CBSENSOR_FLAGS "${CBSENSOR_FLAGS} -I${PROJECT_BINARY_DIR}")
 set(CBSENSOR_FLAGS "${CBSENSOR_FLAGS} -I${INCLUDE_DIR}")
+set(CBSENSOR_FLAGS "${CBSENSOR_FLAGS} -I${PROJECT_SOURCE_DIR}/../include")
 set(CBSENSOR_FLAGS "${CBSENSOR_FLAGS} -include \"version.h\"")
 
 # Prepare source files (and remove configured files from a previous build)
 set(CONFIGURED_VERSION_FILE ${PROJECT_BINARY_DIR}/version.h)
 file(REMOVE ${CONFIGURED_VERSION_FILE})
-configure_file(${INCLUDE_DIR}/version.h.in ${CONFIGURED_VERSION_FILE})
+#configure_file(${INCLUDE_DIR}/version.h.in ${CONFIGURED_VERSION_FILE})
+configure_file(../include/version.h.in ${CONFIGURED_VERSION_FILE})
 
 set(SOURCE_FILES drvmain.c
         hook-tracking.c
