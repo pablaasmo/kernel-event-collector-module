@@ -12,6 +12,7 @@
 #include <linux/gfp.h>
 #include "dbg.h"
 #include <linux/llist.h>
+#include <linux/version.h>
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(5, 6, 0)
     extern struct timespec ec_get_current_timespec(void);
