@@ -12,6 +12,11 @@
 #include <limits.h>
 #endif
 
+// Quick fix to compile with kernel 5.6
+#ifndef time_t
+    #define time_t ktime_t
+#endif
+
 
 //
 // Defines stuff shared between kernel and user for logger events
